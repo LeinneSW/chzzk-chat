@@ -27,12 +27,34 @@ async function connectChannel(channelId){
         return;
     }
 
+    let startTime = Date.now();
     chzzkChat = client.chat({
         channelId: liveDetail.channel.channelId,
         pollInterval: 10 * 1000
     });
-    chzzkChat.on('connect', () => chzzkChat.requestRecentChat(50))
+    chzzkChat.on('connect', () => {
+        startTime = Date.now();
+        chzzkChat.requestRecentChat(50)
+    })
     chzzkChat.on('chat', chat => {
+        const nickname = chat.profile.nickname;
+        const message = chat.message;
+        const date = +chat.time || Date.now();
+
+        if(startTime <= date){
+            addTTSQueue(message, nickname);
+        }
+
+        const color = chat.profile.title?.color ??
+            (chat.profile.streamingProperty?.nicknameColor?.colorCode !== "CC000" ?
+                getCheatKeyColor(chat.profile.streamingProperty.nicknameColor.colorCode) :
+                getUserColor(chat.profile.userIdHash + chat.chatChannelId))
+
+        let emojiList = chat.extras?.emojis;
+        if(!emojiList || typeof emojiList !== 'object'){
+            emojiList = {};
+        }
+
         const badgeList = []
         if(chat.profile?.badge?.imageUrl){
             badgeList.push(chat.profile.badge.imageUrl)
@@ -46,20 +68,10 @@ async function connectChannel(channelId){
         for(const viewerBadge of chat.profile.viewerBadges){
             badgeList.push(viewerBadge.badge.imageUrl)
         }
-
-        const nickname = chat.profile.nickname;
-        const message = chat.message;
-
-        const color = chat.profile.title?.color ??
-            (chat.profile.streamingProperty?.nicknameColor?.colorCode !== "CC000" ?
-                getCheatKeyColor(chat.profile.streamingProperty.nicknameColor.colorCode) :
-                getUserColor(chat.profile.userIdHash + chat.chatChannelId))
-        addMessageBox(nickname, message, +chat.time, color, chat.extras?.emojis || {}, badgeList);
-        //addTTSQueue(message, nickname);
+        addMessageBox(nickname, message, date, color, emojiList, badgeList);
     });
     try{
         await chzzkChat.connect();
-        //addTTSQueue('TTS가 활성화 되었습니다.');
     }catch{}
 }
 
@@ -79,5 +91,6 @@ window.onload = async () => {
         alert('잘못된 형태의 치지직 채널 아이디입니다.');
         return;
     }
+    document.addEventListener('click', () => addTTSQueue('TTS가 활성화 되었습니다.'))
     connectChannel(channelId);
 };
