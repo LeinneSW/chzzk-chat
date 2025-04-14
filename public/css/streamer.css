@@ -1,0 +1,23 @@
+#streamer-info{
+    border-top: 2px solid #a1a1a1;
+    height: 60px;
+
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 4px;
+}
+
+#streamer-avatar{
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: 1px solid white;
+}
+
+#streamer-name{
+    color: white;
+    font-weight: bold;
+}

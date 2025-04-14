@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>치지직 채팅</title>
+    <script src="./scripts/tts.js"></script>
+    <script src='./scripts/setting.js'></script>
+    <script src="scripts/chat_ui.js"></script>
+    <script type="module" src="scripts/chat.js"></script>
+
+    <link rel="stylesheet" href="./css/chat.css">
+    <link rel="stylesheet" href="./css/setting.css">
+    <link rel="stylesheet" href="./css/streamer.css">
+</head>
+<body>
+    <div class="settings" id="settings">
+        <div class="option-title">글자 크기</div>
+        <div class="slider-container">
+            <input class="slider" type="range" min="10" max="40" value="20" data-suffix="px" data-save-name="chatFontSize" data-custom-css="--font-size">
+            <div class="slider-value"></div>
+        </div>
+        <div class="option-title">글자 간격</div>
+        <div class="slider-container">
+            <input class="slider" type="range" min="0" max="20" value="0" data-suffix="px" data-save-name="chatFontPadding" data-custom-css="--font-padding">
+            <div class="slider-value"></div>
+        </div>
+    </div>
+    <div id="app">
+        <div id="chat-box"></div>
+        <div id="streamer-info">
+            <img id="streamer-avatar">
+            <div id="streamer-name">레이누</div>
+        </div>
+    </div>
+</body>
+</html>
