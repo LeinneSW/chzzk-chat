@@ -1,10 +1,7 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 
 let chzzkChat;
-let lastTryMillis = 0;
-
 async function connectChannel(channelId){
-    lastTryMillis = Date.now();
     if(chzzkChat?.connected){
         chzzkChat.disconnect();
     }
@@ -23,8 +20,15 @@ async function connectChannel(channelId){
     }
 
     if(!liveDetail){
-        alert('채널 아이디를 올바르게 작성해주세요');
+        alert('존재하지 않는 치지직 채널입니다.');
         return;
+    }else{
+        const avatar = document.getElementById('streamer-avatar');
+        avatar.src = liveDetail.channel.channelImageUrl;
+
+        const nickname = document.getElementById('streamer-name');
+        nickname.textContent = liveDetail.channel.channelName;
+        console.log(liveDetail);
     }
 
     let startTime = Date.now();
@@ -36,6 +40,14 @@ async function connectChannel(channelId){
         startTime = Date.now();
         chzzkChat.requestRecentChat(50)
     })
+    chzzkChat.on('reconnect', () => {
+        startTime = Date.now();
+        const chatBox = document.getElementById('chat-box');
+        while(chatBox.firstChild){
+            chatBox.removeChild(chatBox.firstChild);
+        }
+        chzzkChat.requestRecentChat(50)
+    })
     chzzkChat.on('chat', chat => {
         const nickname = chat.profile.nickname;
         const message = chat.message;
@@ -45,9 +57,10 @@ async function connectChannel(channelId){
             addTTSQueue(message, nickname);
         }
 
+        const streamingProperty = chat.profile.streamingProperty || {};
         const color = chat.profile.title?.color ??
-            (chat.profile.streamingProperty?.nicknameColor?.colorCode !== "CC000" ?
-                getCheatKeyColor(chat.profile.streamingProperty.nicknameColor.colorCode) :
+            (streamingProperty.nicknameColor?.colorCode !== "CC000" ?
+                getCheatKeyColor(streamingProperty.nicknameColor.colorCode) :
                 getUserColor(chat.profile.userIdHash + chat.chatChannelId))
 
         let emojiList = chat.extras?.emojis;
@@ -59,11 +72,11 @@ async function connectChannel(channelId){
         if(chat.profile?.badge?.imageUrl){
             badgeList.push(chat.profile.badge.imageUrl)
         }
-        if(chat.profile.streamingProperty?.realTimeDonationRanking?.badge?.imageUrl){
-            badgeList.push(chat.profile.streamingProperty.realTimeDonationRanking.badge.imageUrl)
+        if(streamingProperty.realTimeDonationRanking?.badge?.imageUrl){
+            badgeList.push(streamingProperty.realTimeDonationRanking.badge.imageUrl)
         }
-        if(chat.profile.streamingProperty?.subscription?.badge?.imageUrl){
-            badgeList.push(chat.profile.streamingProperty.subscription.badge.imageUrl)
+        if(streamingProperty.subscription?.badge?.imageUrl){
+            badgeList.push(streamingProperty.subscription.badge.imageUrl)
         }
         for(const viewerBadge of chat.profile.viewerBadges){
             badgeList.push(viewerBadge.badge.imageUrl)
@@ -88,7 +101,7 @@ window.onload = async () => {
         location.href = url.toString();
         return;
     }else if(typeof channelId !== 'string' || channelId.length !== 32){
-        alert('잘못된 형태의 치지직 채널 아이디입니다.');
+        alert('올바른 치지직 채널 아이디가 아닙니다.');
         return;
     }
     document.addEventListener('click', () => addTTSQueue('TTS가 활성화 되었습니다.'))

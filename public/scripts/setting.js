@@ -32,8 +32,10 @@ const hideTooltip = (option) => {
 
 window.addEventListener('load', () => {
     const settings = document.getElementById('settings')
-    document.documentElement.addEventListener('mouseenter', () => settings.classList.add('show'))
-    document.documentElement.addEventListener('mouseleave', () => settings.classList.remove('show'))
+    const streamerInfo = document.getElementById('streamer-info')
+    streamerInfo.addEventListener('mouseenter', () => settings.classList.add('show'))
+    settings.addEventListener('mouseleave', () => settings.classList.remove('show'))
+    streamerInfo.addEventListener('mouseleave', () => settings.classList.remove('show'))
 
     const sliders = document.querySelectorAll('.slider-container > .slider')
     for(const slider of sliders){
