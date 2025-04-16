@@ -15,6 +15,8 @@ async function connectChannel(channelId){
     try{
         liveDetail = await client.live.detail(channelId);
     }catch(e){
+        const channelList = await client.search.channels('');
+        // TODO: 채널 찾기 기능
         alert(e.message);
         return;
     }
@@ -29,6 +31,8 @@ async function connectChannel(channelId){
         const nickname = document.getElementById('streamer-name');
         nickname.textContent = liveDetail.channel.channelName;
         console.log(liveDetail);
+
+        // TODO: 온라인/오프라인 기능 체크, 방제/카테고리 조회기능
     }
 
     let startTime = Date.now();
