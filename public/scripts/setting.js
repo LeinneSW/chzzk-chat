@@ -33,9 +33,32 @@ const hideTooltip = (option) => {
 window.addEventListener('load', () => {
     const settings = document.getElementById('settings')
     const streamerInfo = document.getElementById('streamer-info')
-    streamerInfo.addEventListener('mouseenter', () => settings.classList.add('show'))
-    settings.addEventListener('mouseleave', () => settings.classList.remove('show'))
-    streamerInfo.addEventListener('mouseleave', () => settings.classList.remove('show'))
+
+    let count = 0;
+    function checkSettingVisibility(){
+        if(count > 0){
+            settings.classList.add('show')
+        }else{
+            settings.classList.remove('show')
+        }
+    }
+    settings.addEventListener('mouseenter', () => {
+        ++count;
+        checkSettingVisibility();
+    })
+    streamerInfo.addEventListener('mouseenter', () => {
+        ++count;
+        checkSettingVisibility();
+    })
+
+    settings.addEventListener('mouseleave', () => {
+        --count;
+        checkSettingVisibility();
+    })
+    streamerInfo.addEventListener('mouseleave', () => {
+        --count;
+        checkSettingVisibility();
+    })
 
     const sliders = document.querySelectorAll('.slider-container > .slider')
     for(const slider of sliders){
