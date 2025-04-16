@@ -32,7 +32,7 @@ const hideTooltip = (option) => {
 
 window.addEventListener('load', () => {
     const settings = document.getElementById('settings')
-    const streamerInfo = document.getElementById('streamer-info')
+    const liveInfo = document.getElementById('live-info')
 
     let count = 0;
     function checkSettingVisibility(){
@@ -46,7 +46,7 @@ window.addEventListener('load', () => {
         ++count;
         checkSettingVisibility();
     })
-    streamerInfo.addEventListener('mouseenter', () => {
+    liveInfo.addEventListener('mouseenter', () => {
         ++count;
         checkSettingVisibility();
     })
@@ -55,7 +55,7 @@ window.addEventListener('load', () => {
         --count;
         checkSettingVisibility();
     })
-    streamerInfo.addEventListener('mouseleave', () => {
+    liveInfo.addEventListener('mouseleave', () => {
         --count;
         checkSettingVisibility();
     })

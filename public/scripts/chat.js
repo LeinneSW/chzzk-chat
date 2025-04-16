@@ -30,9 +30,10 @@ async function connectChannel(channelId){
 
         const nickname = document.getElementById('streamer-name');
         nickname.textContent = liveDetail.channel.channelName;
-        console.log(liveDetail);
 
-        // TODO: 온라인/오프라인 기능 체크, 방제/카테고리 조회기능
+        // TODO: 온라인/오프라인 기능 체크
+        document.getElementById('live-title').textContent = liveDetail.liveTitle;
+        document.getElementById('live-category').textContent = liveDetail.liveCategoryValue;
     }
 
     let startTime = Date.now();
@@ -108,6 +109,10 @@ window.onload = async () => {
         alert('올바른 치지직 채널 아이디가 아닙니다.');
         return;
     }
-    document.addEventListener('click', () => addTTSQueue('TTS가 활성화 되었습니다.'))
+    let turnOn = false;
+    document.onclick = () => {
+        addTTSQueue('TTS가 활성화 되었습니다.');
+        document.onclick = () => {};
+    }
     connectChannel(channelId);
 };
