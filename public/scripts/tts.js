@@ -86,7 +86,20 @@ const processQueue = ()  => {
 }
 
 // 텍스트를 음성으로 불러와 재생
-const playTTS = async (text) => {
+const playTTS = (text) => {
+    isPlaying = true;
+    // CORS를 피할 수 있음, 단 audio의 정보 취득은 불가능
+    const audio = new Audio("/text-to-speech?text=" + encodeURIComponent(text));
+    const playNext = () => {
+        isPlaying = false;
+        processQueue();
+    }
+    audio.onended = playNext;
+    audio.play().catch(playNext);
+}
+
+// 내부적으로 Google API를 사용중일때엔 CORS에대한 위험이 없음
+const playTTSByGoogle = async (text) => {
     isPlaying = true;
     try{
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
