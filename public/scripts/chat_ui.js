@@ -27,6 +27,7 @@ const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', e
         const badgeImg = document.createElement('img')
         badgeImg.alt = 'badge'
         badgeImg.src = badgeUrl
+        badgeImg.className = 'badge'
         messageBoxDiv.appendChild(badgeImg)
     }
 

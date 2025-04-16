@@ -41,7 +41,7 @@ img{
     margin-bottom: .1em;
 }
 
-img + img{
+.badge{
     margin-left: 3px;
 }
 
