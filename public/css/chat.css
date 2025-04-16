@@ -42,7 +42,7 @@ img{
 }
 
 .badge{
-    margin-left: 3px;
+    margin-right: 3px;
 }
 
 #app{
@@ -55,10 +55,6 @@ img{
 
 .message-box > *{
     vertical-align: middle;
-}
-
-.nickname{
-    padding-left: 4px;
 }
 
 .time{
