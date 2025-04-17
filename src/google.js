@@ -4,7 +4,7 @@ import {TextToSpeechClient} from '@google-cloud/text-to-speech';
 process.env.GOOGLE_APPLICATION_CREDENTIALS = join(resolve(), 'data/key.json');
 
 const client = new TextToSpeechClient();
-export const googleTTS = async (res, text) => {
+export const googleTTS = (res, text) => {
     if(!res){
         return;
     }

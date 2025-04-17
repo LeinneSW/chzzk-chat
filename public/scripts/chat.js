@@ -25,15 +25,27 @@ async function connectChannel(channelId){
         alert('존재하지 않는 치지직 채널입니다.');
         return;
     }else{
+        const isOffline = false;//liveDetail.status !== 'OPEN';
         const avatar = document.getElementById('streamer-avatar');
+        avatar.className = isOffline ? 'offline' : '';
         avatar.src = liveDetail.channel.channelImageUrl;
 
         const nickname = document.getElementById('streamer-name');
         nickname.textContent = liveDetail.channel.channelName;
 
-        // TODO: 온라인/오프라인 기능 체크
-        document.getElementById('live-title').textContent = liveDetail.liveTitle;
-        document.getElementById('live-category').textContent = liveDetail.liveCategoryValue;
+        const divider = document.getElementById('divider');
+        const liveTitle = document.getElementById('live-title');
+        const liveCategory = document.getElementById('live-category');
+        if(isOffline){
+            divider.textContent = '';
+            liveTitle.textContent = '';
+            liveCategory.textContent = '';
+        }else{
+            divider.textContent = '|';
+            liveTitle.textContent = liveDetail.liveTitle;
+            liveCategory.textContent = liveDetail.liveCategoryValue;
+            //userCount.textContent = liveDetail.concurrentUserCount;
+        }
     }
 
     let startTime = Date.now();
@@ -62,6 +74,7 @@ async function connectChannel(channelId){
             addTTSQueue(message, nickname);
         }
 
+        console.log('chat', chat);
         const streamingProperty = chat.profile.streamingProperty || {};
         const color = chat.profile.title?.color ??
             (streamingProperty.nicknameColor?.colorCode !== "CC000" ?
@@ -109,7 +122,6 @@ window.onload = async () => {
         alert('올바른 치지직 채널 아이디가 아닙니다.');
         return;
     }
-    let turnOn = false;
     document.onclick = () => {
         addTTSQueue('TTS가 활성화 되었습니다.');
         document.onclick = () => {};

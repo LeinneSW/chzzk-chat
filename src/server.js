@@ -1,4 +1,5 @@
 import express from 'express';
+import {googleTTS} from "./google.js";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -24,14 +25,12 @@ app.use(express.static('public'));
 
 app.get('/text-to-speech', (req, res) => {
     const text = req.query.text || '';
-    res.redirect(`https://www.google.com/speech-api/v1/synthesize?lang=ko-kr&speed=0.5&text=${encodeURIComponent(text)}`);
-    //googleTTS(res, text);
+    googleTTS(res, text);
 });
 
 app.post('/text-to-speech', (req, res) => {
     const text = req.body || '';
-    res.redirect(`https://www.google.com/speech-api/v1/synthesize?lang=ko-kr&speed=0.5&text=${encodeURIComponent(text)}`);
-    //googleTTS(res, text);
+    googleTTS(res, text);
 });
 
 app.get('/cors/:base/*', async (req, res) => {

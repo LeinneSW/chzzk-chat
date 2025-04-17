@@ -1,0 +1,46 @@
+#live-info{
+    height: 56px;
+    padding: 0 8px;
+    border-bottom: 2px solid #a1a1a1;
+    background-color: #2e2e2e;
+
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#live-info *{
+    color: white;
+    font-size: 17px;
+}
+
+#live-title{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#live-category{
+    font-size: 13px;
+    color: #c1c1c1;
+}
+
+#streamer-avatar{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #f1f1f1;
+}
+
+.offline{
+    filter: grayscale(100%) contrast(85%);
+}
+
+#streamer-name{
+    font-weight: bold;
+}
+
+#settings-button{
+    margin-left: auto;
+    cursor: pointer;
+}

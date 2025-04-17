@@ -42,7 +42,7 @@ const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', e
 
     message = escapeHTML(message)
     for(const emojiName in emojiList){
-        message = message.replaceAll(`{:${emojiName}:}`, `<img src='${emojiList[emojiName]}' alt="emoji">`)
+        message = message.replaceAll(`{:${emojiName}:}`, `<img class='emoji' src='${emojiList[emojiName]}' alt="emoji">`)
     }
     messageSpan.innerHTML = ` : ${message}`
     messageBoxDiv.appendChild(messageSpan)

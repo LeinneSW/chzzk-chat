@@ -9,33 +9,108 @@
     <script type="module" src="./scripts/chat.js"></script>
 
     <link rel="stylesheet" href="./css/chat.css">
+    <link rel="stylesheet" href="./css/live.css">
     <link rel="stylesheet" href="./css/setting.css">
-    <link rel="stylesheet" href="./css/streamer.css">
 </head>
 <body>
-    <div class="settings" id="settings">
-        <div class="option-title">글자 크기</div>
-        <div class="slider-container">
-            <input class="slider" type="range" min="10" max="40" value="20" data-suffix="px" data-save-name="chatFontSize" data-custom-css="--font-size">
-            <div class="slider-value"></div>
-        </div>
-        <div class="option-title">글자 간격</div>
-        <div class="slider-container">
-            <input class="slider" type="range" min="0" max="20" value="0" data-suffix="px" data-save-name="chatFontPadding" data-custom-css="--font-padding">
-            <div class="slider-value"></div>
+    <div class="modal-overlay" id="modal">
+        <div class="settings" id="settings">
+            <div class="option-title">글자 크기</div>
+            <div class="slider-container">
+                <input class="slider" type="range" min="10" max="40" value="20" data-suffix="px" data-save-name="chatFontSize" data-custom-css="--font-size">
+                <div class="slider-value"></div>
+            </div>
+            <div class="option-title">글자 간격</div>
+            <div class="slider-container">
+                <input class="slider" type="range" min="0" max="20" value="0" data-suffix="px" data-save-name="chatFontPadding" data-custom-css="--font-vertical-padding">
+                <div class="slider-value"></div>
+            </div>
+            <div style="margin-bottom: .5em"></div>
+            <div class="option-title" data-description="대화 내용을 소리내어 읽어줄지를 설정합니다">채팅 음성 출력</div>
+            <div style="font-size: 0 !important">
+                <input class="option-input" type="radio" name="enableTTS" value="1" id="enableTTS" data-save-name="enableTTS" checked>
+                <label class="option-label" for="enableTTS">켜기</label>
+                <input class="option-input" type="radio" name="enableTTS" value="0" id="disableTTS" data-save-name="enableTTS">
+                <label class="option-label" for="disableTTS">끄기</label>
+            </div>
+            <div class="option-title" data-description="닉네임 끝이 'bot, 봇'인 유저를 무시합니다">봇 필터링</div>
+            <div style="font-size: 0 !important">
+                <input class="option-input" type="radio" name="enableBot" value="1" id="enableBot" data-save-name="ignoreBot" checked>
+                <label class="option-label" for="enableBot">활성화</label>
+                <input class="option-input" type="radio" name="enableBot" value="0" id="disableBot" data-save-name="ignoreBot">
+                <label class="option-label" for="disableBot">비활성화</label>
+            </div>
+            <div class="option-title">음성 볼륨</div>
+            <div class="slider-container">
+                <input class="slider" id="sizeSlider" type="range" min="1" max="100" value="100" data-suffix="%" data-save-name="ttsVolume">
+                <div class="slider-value"></div>
+            </div>
         </div>
     </div>
     <div id="app">
-        <div id="chat-box"></div>
         <div id="live-info">
             <img id="streamer-avatar" alt="avatar" src="">
-            <div id="streamer-name">레이누</div>
-            <div class="divider">|</div>
+            <div id="streamer-name"></div>
+            <div id="divider"></div>
             <div id="stream-detail">
                 <div id="live-title"></div>
                 <div id="live-category"></div>
             </div>
+            <div id="settings-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-sliders" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z"/>
+                </svg>
+            </div>
         </div>
+        <div id="chat-box"></div>
+        <div class="chat-line2">
+            <span class="time">[12:30]</span>
+            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/badge/fan_03.png" class="badge2">
+            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/badge/fan_03.png" class="badge2">
+            <span class="nickname2">닉네임</span> :
+            <span class="message">
+                아니 근데이게 진짜로 이렇게 되는게 맞는거야? 아니 근데이게 진짜로 이렇게 되는게 맞는거야?
+            </span>
+        </div>
+        <div id="1744874728801" class="message-box">
+            <span class="time">[16:25]</span>
+            <img alt="badge" src="https://nng-phinf.pstatic.net/glive/subscription/badge/bd1dcaadbc663f732577a18d949cd3f8/1/1_1735106268369.png" class="badge">
+            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/badge/fan_03.png" class="badge">
+            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/icon/1st.png" class="badge">
+            <span class="nickname" style="color: rgb(148, 201, 148);">맹꽁이서당</span>
+            <span class="message"> : 1시간 반동안 혼자 뭐하냐</span>
+        </div>
+
     </div>
+    <style>
+        .chat-line2 {
+            font-size: 20px;
+            word-break: break-word;
+            color: white;
+        }
+
+        .chat-line2 * {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        .badge2 {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+    <script>
+        const modal = document.getElementById('modal');
+        const openBtn = document.getElementById('settings-button');
+        openBtn.onclick = () => {
+            modal.classList.add('show');
+        };
+        modal.onclick = (e) => {
+            if(e.target === modal){
+                modal.classList.remove('show');
+            }
+        }
+    </script>
 </body>
 </html>
