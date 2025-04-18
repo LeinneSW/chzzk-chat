@@ -38,7 +38,7 @@ const checkLiveState = async (channelId) => {
         userCount.innerHTML = `<div></div>${liveStatus.concurrentUserCount}`;
     }
 
-    if(beforeLiveStatus == null || beforeLiveStatus.chatChannelId !== liveStatus.chatChannelId){
+    if(!!liveStatus.chatChannelId && liveStatus.chatChannelId !== beforeLiveStatus?.chatChannelId){
         connectChannel();
     }
 }
