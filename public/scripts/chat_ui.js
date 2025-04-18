@@ -33,7 +33,7 @@ const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', e
 
     const userSpan = document.createElement('span')
     userSpan.className = 'nickname'
-    userSpan.innerText = nickname
+    userSpan.textContent = nickname
     userSpan.style.color = color
     messageBoxDiv.appendChild(userSpan)
 

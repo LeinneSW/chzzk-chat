@@ -1,5 +1,5 @@
 const setInputValue = (input, suffix = '') => {
-    input.nextElementSibling.innerText = input.value + suffix
+    input.nextElementSibling.textContent = input.value + suffix
     const customCss = input.dataset.customCss
     customCss && document.documentElement.style.setProperty(customCss, input.value + 'px')
 }
