@@ -62,6 +62,10 @@ const normalizeRepeatedText = (text) => {
 }
 
 const addTTSQueue = (text, nickname) => {
+    if(localStorage.getItem('enableTTS') !== '1'){
+        return;
+    }
+
     // 특정 닉네임, 문자열 제외 기능
     if(
         (options.name.enabled && nickname != null && options.name.regex.test(nickname)) ||
