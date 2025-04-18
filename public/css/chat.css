@@ -53,9 +53,11 @@ body, html{
 .message-box{
     word-break: keep-all;
     padding: 0 4px;
+    line-height: calc(var(--font-size) + 10px);
+}
 
-    min-height: calc(var(--font-size) + 8px);
-    line-height: calc(var(--font-size) + 8px);
+.message-box:first-child{
+    margin-top: 4px;
 }
 
 .message-box + .message-box{
