@@ -39,17 +39,23 @@ const checkLiveState = async (channelId) => {
     }
 
     if(!!liveStatus.chatChannelId && liveStatus.chatChannelId !== beforeLiveStatus?.chatChannelId){
+        if(!!beforeLiveStatus?.chatChannelId){
+            clearChatBox();
+        }
         connectChannel();
     }
 }
+
+const clearChatBox = () => {
+    const chatBox = document.getElementById('chat-container');
+    while(chatBox.firstChild){
+        chatBox.removeChild(chatBox.firstChild);
+    }
+}
+
 const connectChannel = () => {
     if(chzzkChat?.connected){
         chzzkChat.disconnect();
-
-        const chatBox = document.getElementById('chat-container');
-        while(chatBox.firstChild){
-            chatBox.removeChild(chatBox.firstChild);
-        }
     }
 
     let startTime = Date.now();
