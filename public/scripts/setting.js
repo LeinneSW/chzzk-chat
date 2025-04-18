@@ -32,7 +32,7 @@ const hideTooltip = (option) => {
 
 window.addEventListener('load', () => {
     const settings = document.getElementById('settings')
-    const liveInfo = document.getElementById('live-info')
+    const liveInfo = document.getElementById('live-container')
 
     let count = 0;
     function checkSettingVisibility(){

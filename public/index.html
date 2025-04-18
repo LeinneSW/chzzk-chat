@@ -15,6 +15,7 @@
 <body>
     <div class="modal-overlay" id="modal">
         <div class="settings" id="settings">
+            <div class="settings-title">UI 설정</div>
             <div class="option-title">글자 크기</div>
             <div class="slider-container">
                 <input class="slider" type="range" min="10" max="40" value="20" data-suffix="px" data-save-name="chatFontSize" data-custom-css="--font-size">
@@ -25,7 +26,8 @@
                 <input class="slider" type="range" min="0" max="20" value="0" data-suffix="px" data-save-name="chatFontPadding" data-custom-css="--font-vertical-padding">
                 <div class="slider-value"></div>
             </div>
-            <div style="margin-bottom: .5em"></div>
+            <div style="margin-bottom: 1em"></div>
+            <div class="settings-title">TTS 설정</div>
             <div class="option-title" data-description="대화 내용을 소리내어 읽어줄지를 설정합니다">채팅 음성 출력</div>
             <div style="font-size: 0 !important">
                 <input class="option-input" type="radio" name="enableTTS" value="1" id="enableTTS" data-save-name="enableTTS" checked>
@@ -48,11 +50,12 @@
         </div>
     </div>
     <div id="app">
-        <div id="live-info">
-            <img id="streamer-avatar" alt="avatar" src="">
+        <div id="live-container">
+            <img id="streamer-avatar" alt="avatar" src="https://ssl.pstatic.net/cmstatic/nng/img/img_anonymous_square_gray_opacity2x.png?type=f120_120_na">
             <div id="streamer-name"></div>
+            <div id="user-count"></div>
             <div id="divider"></div>
-            <div id="stream-detail">
+            <div id="live-detail">
                 <div id="live-title"></div>
                 <div id="live-category"></div>
             </div>
@@ -63,43 +66,8 @@
                 </svg>
             </div>
         </div>
-        <div id="chat-box"></div>
-        <div class="chat-line2">
-            <span class="time">[12:30]</span>
-            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/badge/fan_03.png" class="badge2">
-            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/badge/fan_03.png" class="badge2">
-            <span class="nickname2">닉네임</span> :
-            <span class="message">
-                아니 근데이게 진짜로 이렇게 되는게 맞는거야? 아니 근데이게 진짜로 이렇게 되는게 맞는거야?
-            </span>
-        </div>
-        <div id="1744874728801" class="message-box">
-            <span class="time">[16:25]</span>
-            <img alt="badge" src="https://nng-phinf.pstatic.net/glive/subscription/badge/bd1dcaadbc663f732577a18d949cd3f8/1/1_1735106268369.png" class="badge">
-            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/badge/fan_03.png" class="badge">
-            <img alt="badge" src="https://ssl.pstatic.net/static/nng/glive/icon/1st.png" class="badge">
-            <span class="nickname" style="color: rgb(148, 201, 148);">맹꽁이서당</span>
-            <span class="message"> : 1시간 반동안 혼자 뭐하냐</span>
-        </div>
-
+        <div id="chat-container"></div>
     </div>
-    <style>
-        .chat-line2 {
-            font-size: 20px;
-            word-break: break-word;
-            color: white;
-        }
-
-        .chat-line2 * {
-            font-size: 20px;
-            vertical-align: middle;
-        }
-
-        .badge2 {
-            width: 20px;
-            height: 20px;
-        }
-    </style>
     <script>
         const modal = document.getElementById('modal');
         const openBtn = document.getElementById('settings-button');

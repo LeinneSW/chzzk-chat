@@ -12,7 +12,7 @@ const formatTime = (msecs) => {
 }
 
 const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', emojiList = {}, badgeList = []) => {
-    const chatBox = document.getElementById('chat-box');
+    const chatBox = document.getElementById('chat-container');
     const messageBoxDiv = document.createElement('div')
     messageBoxDiv.id = msecs + ''
     messageBoxDiv.className = 'message-box'
@@ -47,7 +47,11 @@ const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', e
     messageSpan.innerHTML = ` : ${message}`
     messageBoxDiv.appendChild(messageSpan)
 
-    chatBox.scrollTop = chatBox.scrollHeight
+
+    const threshold = 10; // 오차 허용값 (px)
+    if(chatBox.scrollHeight - (chatBox.scrollTop + chatBox.clientHeight + messageBoxDiv.clientHeight) <= threshold){
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 }
 
 const nicknameColors = [

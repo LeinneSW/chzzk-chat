@@ -1,68 +1,64 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 
 let chzzkChat;
-async function connectChannel(channelId){
+let liveStatus;
+
+const client = new ChzzkClient({
+    baseUrls: {
+        chzzkBaseUrl: "/cors/chzzk",
+        gameBaseUrl: "/cors/game"
+    }
+});
+const checkLiveState = async (channelId) => {
+    const beforeLiveStatus = liveStatus;
+    try{
+        liveStatus = await client.live.status(channelId);
+    }catch(e){}
+    if(liveStatus == null || typeof liveStatus !== 'object'){
+        return;
+    }
+
+    const isOffline = liveStatus.status !== 'OPEN';
+    const avatar = document.getElementById('streamer-avatar');
+    avatar.className = isOffline ? 'offline' : '';
+
+    const divider = document.getElementById('divider');
+    const userCount = document.getElementById('user-count');
+    const liveTitle = document.getElementById('live-title');
+    const liveCategory = document.getElementById('live-category');
+    if(isOffline){
+        divider.textContent = '';
+        liveTitle.textContent = '';
+        liveCategory.textContent = '';
+        userCount.innerHTML = '';
+    }else{
+        divider.textContent = '|';
+        liveTitle.textContent = liveStatus.liveTitle;
+        liveCategory.textContent = liveStatus.liveCategoryValue;
+        userCount.innerHTML = `<div></div>${liveStatus.concurrentUserCount}`;
+    }
+
+    if(beforeLiveStatus == null || beforeLiveStatus.chatChannelId !== liveStatus.chatChannelId){
+        connectChannel();
+    }
+}
+const connectChannel = () => {
     if(chzzkChat?.connected){
         chzzkChat.disconnect();
-    }
-    const client = new ChzzkClient({
-        baseUrls: {
-            chzzkBaseUrl: "/cors/chzzk",
-            gameBaseUrl: "/cors/game"
-        }
-    });
-    let liveDetail = null;
-    try{
-        liveDetail = await client.live.detail(channelId);
-    }catch(e){
-        const channelList = await client.search.channels('');
-        // TODO: 채널 찾기 기능
-        alert(e.message);
-        return;
-    }
 
-    if(!liveDetail){
-        alert('존재하지 않는 치지직 채널입니다.');
-        return;
-    }else{
-        const isOffline = false;//liveDetail.status !== 'OPEN';
-        const avatar = document.getElementById('streamer-avatar');
-        avatar.className = isOffline ? 'offline' : '';
-        avatar.src = liveDetail.channel.channelImageUrl;
-
-        const nickname = document.getElementById('streamer-name');
-        nickname.textContent = liveDetail.channel.channelName;
-
-        const divider = document.getElementById('divider');
-        const liveTitle = document.getElementById('live-title');
-        const liveCategory = document.getElementById('live-category');
-        if(isOffline){
-            divider.textContent = '';
-            liveTitle.textContent = '';
-            liveCategory.textContent = '';
-        }else{
-            divider.textContent = '|';
-            liveTitle.textContent = liveDetail.liveTitle;
-            liveCategory.textContent = liveDetail.liveCategoryValue;
-            //userCount.textContent = liveDetail.concurrentUserCount;
+        const chatBox = document.getElementById('chat-container');
+        while(chatBox.firstChild){
+            chatBox.removeChild(chatBox.firstChild);
         }
     }
 
     let startTime = Date.now();
     chzzkChat = client.chat({
-        channelId: liveDetail.channel.channelId,
-        pollInterval: 10 * 1000
+        chatChannelId: liveStatus.chatChannelId,
+        pollInterval: 0,
     });
     chzzkChat.on('connect', () => {
         startTime = Date.now();
-        chzzkChat.requestRecentChat(50)
-    })
-    chzzkChat.on('reconnect', () => {
-        startTime = Date.now();
-        const chatBox = document.getElementById('chat-box');
-        while(chatBox.firstChild){
-            chatBox.removeChild(chatBox.firstChild);
-        }
         chzzkChat.requestRecentChat(50)
     })
     chzzkChat.on('chat', chat => {
@@ -74,12 +70,11 @@ async function connectChannel(channelId){
             addTTSQueue(message, nickname);
         }
 
-        console.log('chat', chat);
         const streamingProperty = chat.profile.streamingProperty || {};
         const color = chat.profile.title?.color ??
             (streamingProperty.nicknameColor?.colorCode !== "CC000" ?
                 getCheatKeyColor(streamingProperty.nicknameColor.colorCode) :
-                getUserColor(chat.profile.userIdHash + chat.chatChannelId))
+                getUserColor(chat.profile.userIdHash + chzzkChat.chatChannelId))
 
         let emojiList = chat.extras?.emojis;
         if(!emojiList || typeof emojiList !== 'object'){
@@ -101,30 +96,58 @@ async function connectChannel(channelId){
         }
         addMessageBox(nickname, message, date, color, emojiList, badgeList);
     });
-    try{
-        await chzzkChat.connect();
-    }catch{}
+    chzzkChat.connect().catch(() => {});
+}
+
+const redirectChannel = (channelId) => {
+    const url = new URL(location.href);
+    url.searchParams.set('channelId', channelId);
+    location.href = url.toString();
 }
 
 window.onload = async () => {
     const params = new URLSearchParams(location.search);
     let channelId = params.get('channelId') || params.get('channel')  || params.get('id');
-
     if(!channelId){
         while(!channelId){
             channelId = prompt('치지직 채널 ID를 입력해주세요');
         }
-        const url = new URL(location.href);
-        url.searchParams.set('channelId', channelId);
-        location.href = url.toString();
-        return;
-    }else if(typeof channelId !== 'string' || channelId.length !== 32){
-        alert('올바른 치지직 채널 아이디가 아닙니다.');
+        redirectChannel(channelId);
         return;
     }
     document.onclick = () => {
         addTTSQueue('TTS가 활성화 되었습니다.');
         document.onclick = () => {};
     }
-    connectChannel(channelId);
+
+    let liveDetail;
+    try{
+        liveDetail = await client.live.detail(channelId);
+    }catch(e){}
+    if(liveDetail == null || typeof liveDetail !== 'object'){
+        const channelList = await client.search.channels(channelId);
+        let channel = channelList.channels.find(channel => channel.channelName === channelId);
+        if(!channel){
+            channel = channelList.channels[0];
+        }
+        if(!channel){
+            alert('존재하지 않는 채널 혹은 한번도 방송하지 않은 채널입니다.');
+        }else{
+            redirectChannel(channel.channelId);
+        }
+        return;
+    }
+
+    // 채널명, 프사 취득하기
+    const avatar = document.getElementById('streamer-avatar');
+    avatar.onerror = () => {
+        avatar.src = 'https://ssl.pstatic.net/cmstatic/nng/img/img_anonymous_square_gray_opacity2x.png?type=f120_120_na';
+    };
+    avatar.src = liveDetail.channel.channelImageUrl || avatar.src;
+
+    const nickname = document.getElementById('streamer-name');
+    nickname.textContent = liveDetail.channel.channelName;
+
+    await checkLiveState(channelId);
+    setInterval(() => checkLiveState(channelId), 10 * 1000);
 };
