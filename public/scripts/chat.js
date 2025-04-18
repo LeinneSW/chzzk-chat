@@ -110,7 +110,7 @@ window.onload = async () => {
     let channelId = params.get('channelId') || params.get('channel')  || params.get('id');
     if(!channelId){
         while(!channelId){
-            channelId = prompt('치지직 채널 ID를 입력해주세요');
+            channelId = prompt('치지직 채널 ID 혹은 닉네임을 입력해주세요');
         }
         redirectChannel(channelId);
         return;
