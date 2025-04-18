@@ -20,7 +20,7 @@ const showTooltip = (option) => {
     tooltip.className = 'tooltip'
     tooltip.innerHTML = description.replaceAll('\\n', '<br>')
     option.parentNode.insertBefore(tooltip, option.nextElementSibling)
-    tooltip.style.top = (option.getBoundingClientRect().top - tooltip.offsetHeight - 12) + 'px'
+    tooltip.style.top = (option.getBoundingClientRect().top - tooltip.offsetHeight) + 'px'
 }
 
 const hideTooltip = (option) => {
