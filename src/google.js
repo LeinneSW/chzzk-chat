@@ -3,7 +3,13 @@ import {TextToSpeechClient} from '@google-cloud/text-to-speech';
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS = join(resolve(), 'data/key.json');
 
-const client = new TextToSpeechClient();
+const client = (() => {
+    try{
+        return new TextToSpeechClient();
+    }catch(e){
+        console.error(e);
+    }
+})();
 export const googleTTS = (res, text) => {
     if(!res){
         return;
@@ -20,6 +26,10 @@ export const googleTTS = (res, text) => {
         },
         audioConfig: {audioEncoding: 'MP3'},
     };
+
+    if(!client){
+        return res.status(500).send('음성 생성에 실패했습니다.');
+    }
 
     client.synthesizeSpeech(request).then(([response]) => {
         // 응답 헤더 설정: audio/mp3로 스트리밍 전송
