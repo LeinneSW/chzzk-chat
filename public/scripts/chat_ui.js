@@ -1,3 +1,6 @@
+const tier2ColorList = {};
+const cheatKeyColorList = {};
+
 const escapeHTML = (text) => text.replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -11,7 +14,7 @@ const formatTime = (msecs) => {
     return `[${h}:${m}]`
 }
 
-const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', emojiList = {}, badgeList = []) => {
+const addMessageBox = (nickname, message, msecs = Date.now(), colorData = 'white', emojiList = {}, badgeList = []) => {
     const chatBox = document.getElementById('chat-container');
     const messageBoxDiv = document.createElement('div')
     messageBoxDiv.id = msecs + ''
@@ -34,7 +37,27 @@ const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', e
     const userSpan = document.createElement('span')
     userSpan.className = 'nickname'
     userSpan.textContent = nickname
-    userSpan.style.color = color
+    if(typeof colorData === 'string'){
+        userSpan.style.color = colorData
+    }else{
+        switch(colorData.effectType){
+            case 'GRADATION':
+                const direction = colorData.effectValue.direction.toLowerCase();
+                const startColor = colorData.darkRgbValue;
+                const endColor = colorData.effectValue.darkRgbEndValue;
+                userSpan.style.backgroundImage = `linear-gradient(to ${direction}, ${startColor}, ${endColor})`;
+                userSpan.style.backgroundClip = 'text';
+                userSpan.style.color = 'transparent';
+                break;
+            case 'HIGHLIGHT':
+                userSpan.style.color = colorData.darkRgbValue;
+                userSpan.style.backgroundImage = colorData.effectValue.darkRgbBackgroundValue;
+                break;
+            case 'STEALTH':
+                userSpan.style.color = 'transparent';
+                break;
+        }
+    }
     messageBoxDiv.appendChild(userSpan)
 
     const messageSpan = document.createElement('span')
@@ -46,7 +69,6 @@ const addMessageBox = (nickname, message, msecs = Date.now(), color = 'white', e
     }
     messageSpan.innerHTML = ` : ${message}`
     messageBoxDiv.appendChild(messageSpan)
-
 
     const threshold = 10; // 오차 허용값 (px)
     if(chatBox.scrollHeight - (chatBox.scrollTop + chatBox.clientHeight + messageBoxDiv.clientHeight) <= threshold){
@@ -67,14 +89,6 @@ const nicknameColors = [
     "#9FCE8E", "#A6D293", "#ABD373", "#BFDE73"
 ]
 
-const cheatKeyNicknameColors = [
-    "#E2BE61", "#ECA843", "#EC8A43", "#EA723D",
-    "#E56B79", "#E68199", "#E16CB5", "#BC7ACC",
-    "#A983E7", "#8B89E1", "#7194EE", "#7994D0",
-    "#71AAED", "#5FB7E8", "#80BDD3", "#80D3CE",
-    "#99D3BA", "#94D59A", "#BBE69A", "#CCE57D"
-]
-
 const getUserColor = (seed) => {
     const index = seed.split("")
         .map((c) => c.charCodeAt(0))
@@ -82,7 +96,24 @@ const getUserColor = (seed) => {
     return nicknameColors[index]
 }
 
-const getCheatKeyColor = (code) => {
-    const colorCode = parseInt(code.replace("CC", ""))
-    return cheatKeyNicknameColors[colorCode - 1]
+const convertColorCode = (colorCode, userId, chatChannelId) => {
+    if(colorCode.startsWith('CC')){
+        return cheatKeyColorList[colorCode] || getUserColor(userId + chatChannelId);
+    }
+    return tier2ColorList[colorCode];
 }
+
+window.addEventListener('load', async () => {
+    const colorCodes = await (await fetch('/colorCodes')).json();
+    for(const index in colorCodes){
+        const colorData = colorCodes[index];
+        switch(colorData.availableScope){
+            case 'CHEATKEY':
+                cheatKeyColorList[colorData.code] = colorData.darkRgbValue;
+                break;
+            case 'SUBSCRIPTION_TIER2':
+                tier2ColorList[colorData.code] = colorData;
+                break;
+        }
+    }
+})

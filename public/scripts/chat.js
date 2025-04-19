@@ -76,11 +76,17 @@ const connectChannel = () => {
             addTTSQueue(message, nickname);
         }
 
-        const streamingProperty = chat.profile.streamingProperty || {};
-        const color = chat.profile.title?.color ??
-            (streamingProperty.nicknameColor?.colorCode !== "CC000" ?
-                getCheatKeyColor(streamingProperty.nicknameColor.colorCode) :
-                getUserColor(chat.profile.userIdHash + chzzkChat.chatChannelId))
+        let colorData = 'white';
+        const streamingProperty = chat.profile.streamingProperty;
+        if(chat.profile.title){ // 스트리머, 매니저 등 특수 역할
+            colorData = chat.profile.title.color;
+        }else{
+            colorData = convertColorCode(
+                streamingProperty.nicknameColor.colorCode,
+                chat.profile.userIdHash,
+                chzzkChat.chatChannelId
+            );
+        }
 
         let emojiList = chat.extras?.emojis;
         if(!emojiList || typeof emojiList !== 'object'){
@@ -100,7 +106,7 @@ const connectChannel = () => {
         for(const viewerBadge of chat.profile.viewerBadges){
             badgeList.push(viewerBadge.badge.imageUrl)
         }
-        addMessageBox(nickname, message, date, color, emojiList, badgeList);
+        addMessageBox(nickname, message, date, colorData, emojiList, badgeList);
     });
     chzzkChat.connect().catch(() => {});
 }
@@ -111,7 +117,7 @@ const redirectChannel = (channelId) => {
     location.href = url.toString();
 }
 
-window.onload = async () => {
+window.addEventListener('load', async () => {
     const params = new URLSearchParams(location.search);
     let channelId = params.get('channelId') || params.get('channel')  || params.get('id');
     if(!channelId){
@@ -156,4 +162,4 @@ window.onload = async () => {
 
     await checkLiveState(channelId);
     setInterval(() => checkLiveState(channelId), 10 * 1000);
-};
+});

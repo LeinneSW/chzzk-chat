@@ -63,6 +63,16 @@ app.get('/cors/:base/*', async (req, res) => {
         res.status(500).set(corsHeaders).send("Failed to fetch data from the target URL.");
     }
 });
+app.get('/colorCodes', async (req, res) => {
+    try{
+        const httpData = await fetch('https://api.chzzk.naver.com/service/v2/nickname/color/codes', {headers: agentHeaders});
+        const resData = await httpData.json();
+        res.type("application/json");
+        res.send(resData.content?.codeList || []);
+    }catch{
+        res.sendStatus(404);
+    }
+});
 
 const PORT = process.env.HTTP_PORT || 5000;
 app.listen(PORT, () => {
