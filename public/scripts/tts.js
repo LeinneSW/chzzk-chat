@@ -98,9 +98,9 @@ const playTTS = (text) => {
     }*/
     let ttsURL = localStorage.getItem('ttsURL');
     if(!ttsURL || ttsURL.indexOf('://') === -1){
-        ttsURL = "/text-to-speech";
+        ttsURL = "/text-to-speech?asdf=1234";
     }
-    ttsURL = ttsURL.split('?')[0] + `?text=${encodeURIComponent(text)}`;
+    ttsURL = ttsURL + `&text=${encodeURIComponent(text)}`;
     isPlaying = true;
     const audio = new Audio(ttsURL);
     const playNext = () => {
