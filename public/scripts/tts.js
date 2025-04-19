@@ -16,7 +16,7 @@ const options = (() => {
             enabled: true,
             regex: /^[!$/].*$/u, // 각종 명령어들 TTS 제외처리
         },
-        maximumPlayTime: 6, // 1회 채팅당 최대 재생 시간, 초단위
+        maximumPlayTime: 0, // 1회 채팅당 최대 재생 시간, 초단위
     };
     try{
         const {name, message, messageSkip, maximumPlayTime} = JSON.parse(localStorage.getItem('options') || '{}');
@@ -91,9 +91,18 @@ const processQueue = ()  => {
 
 // 텍스트를 음성으로 불러와 재생
 const playTTS = (text) => {
+    // TODO: TTS 기능
+    /*const maxTime = (+options.maximumPlayTime || 0);
+    if(maxTime > 0){
+        playTTSByGoogle(text);
+    }*/
+    let ttsURL = localStorage.getItem('ttsURL');
+    if(!ttsURL || ttsURL.indexOf('://') === -1){
+        ttsURL = "/text-to-speech";
+    }
+    ttsURL = ttsURL.split('?')[0] + `?text=${encodeURIComponent(text)}`;
     isPlaying = true;
-    // CORS를 피할 수 있음, 단 audio의 정보 취득은 불가능
-    const audio = new Audio("/text-to-speech?text=" + encodeURIComponent(text));
+    const audio = new Audio(ttsURL);
     const playNext = () => {
         isPlaying = false;
         processQueue();
