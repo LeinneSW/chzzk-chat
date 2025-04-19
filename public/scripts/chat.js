@@ -76,7 +76,7 @@ const connectChannel = () => {
             addTTSQueue(message, nickname);
         }
 
-        let colorData = 'white';
+        let colorData;
         const streamingProperty = chat.profile.streamingProperty;
         if(chat.profile.title){ // 스트리머, 매니저 등 특수 역할
             colorData = chat.profile.title.color;
