@@ -91,18 +91,21 @@ const processQueue = ()  => {
 
 // 텍스트를 음성으로 불러와 재생
 const playTTS = (text) => {
-    // TODO: TTS 기능
+    let ttsUrl;
+    try{
+        let urlData = localStorage.getItem('ttsURL') || '';
+        ttsUrl = new URL(urlData);
+    }catch{
+        ttsUrl = new URL(location.origin + "/text-to-speech");
+    }
+    ttsUrl.searchParams.append('text', text);
+    // TODO: maximumPlayTime 기능 구현
     /*const maxTime = (+options.maximumPlayTime || 0);
     if(maxTime > 0){
         playTTSByGoogle(text);
     }*/
-    let ttsURL = localStorage.getItem('ttsURL');
-    if(!ttsURL || ttsURL.indexOf('://') === -1){
-        ttsURL = "/text-to-speech?asdf=1234";
-    }
-    ttsURL = ttsURL + `&text=${encodeURIComponent(text)}`;
     isPlaying = true;
-    const audio = new Audio(ttsURL);
+    const audio = new Audio(ttsUrl.toString());
     const playNext = () => {
         isPlaying = false;
         processQueue();
