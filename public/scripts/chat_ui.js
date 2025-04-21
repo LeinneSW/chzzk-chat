@@ -52,7 +52,7 @@ const addMessageBox = (nickname, message, msecs = Date.now(), colorData = 'white
                 break;
             case 'HIGHLIGHT':
                 userSpan.style.color = colorData.darkRgbValue;
-                userSpan.style.backgroundImage = colorData.effectValue.darkRgbBackgroundValue;
+                userSpan.style.backgroundColor = colorData.effectValue.darkRgbBackgroundValue;
                 break;
             case 'STEALTH':
                 userSpan.style.color = 'transparent';
