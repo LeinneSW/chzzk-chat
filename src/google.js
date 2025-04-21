@@ -1,22 +1,26 @@
+import {existsSync} from 'fs';
 import {join, resolve} from 'path';
 import {TextToSpeechClient} from '@google-cloud/text-to-speech';
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = join(resolve(), 'data/key.json');
-
-const client = (() => {
-    try{
-        return new TextToSpeechClient();
-    }catch(e){
-        console.error(e);
+let ttsClient;
+const getTTSClient = () => {
+    if(!ttsClient){
+        const keyFilePath = join(resolve(), 'data/key.json');
+        if(existsSync(keyFilePath)){
+            process.env.GOOGLE_APPLICATION_CREDENTIALS = keyFilePath;
+            ttsClient = new TextToSpeechClient();
+        }
     }
-})();
+    return ttsClient;
+}
 export const googleTTS = (res, text) => {
     if(!res){
         return;
     }
 
-    if(!text){
-        return res.status(500).send('음성 생성에 실패했습니다.');
+    const client = getTTSClient();
+    if(!text || !client){
+        return res.sendStatus(500);
     }
     const request = {
         input: {text},
@@ -27,10 +31,6 @@ export const googleTTS = (res, text) => {
         audioConfig: {audioEncoding: 'MP3'},
     };
 
-    if(!client){
-        return res.status(500).send('음성 생성에 실패했습니다.');
-    }
-
     client.synthesizeSpeech(request).then(([response]) => {
         // 응답 헤더 설정: audio/mp3로 스트리밍 전송
         res.set({
@@ -40,6 +40,6 @@ export const googleTTS = (res, text) => {
         res.send(response.audioContent);
     }).catch(error => {
         console.error(error);
-        res.status(500).send('음성 생성에 실패했습니다.');
+        res.sendStatus(500);
     });
 }
