@@ -27,6 +27,7 @@ body, html{
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: #1c1c1e;
 }
 
 #chat-container{
@@ -46,14 +47,10 @@ body, html{
     height: calc(var(--font-size) + 8px);
 }
 
-#app{
-    background-color: #1c1c1e;
-}
-
 .message-box{
     word-break: keep-all;
     padding: 0 4px;
-    line-height: calc(var(--font-size) + 10px);
+    line-height: calc(var(--font-size) + 10px); /* 이모지 크기를 맞추기 위해 사용 */
 }
 
 .message-box:first-child{
