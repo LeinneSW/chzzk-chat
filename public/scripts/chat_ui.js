@@ -47,6 +47,7 @@ const addMessageBox = (nickname, message, msecs = Date.now(), colorData = 'white
                 const endColor = colorData.effectValue.darkRgbEndValue;
                 userSpan.style.backgroundImage = `linear-gradient(to ${direction}, ${startColor}, ${endColor})`;
                 userSpan.style.backgroundClip = 'text';
+                userSpan.style.webkitBackgroundClip = 'text';
                 userSpan.style.color = 'transparent';
                 break;
             case 'HIGHLIGHT':
