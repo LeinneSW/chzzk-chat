@@ -48,7 +48,6 @@ body, html{
 }
 
 .message-box{
-    word-break: keep-all;
     padding: 0 4px;
     line-height: calc(var(--font-size) + 10px); /* 이모지 크기를 맞추기 위해 사용 */
 }
