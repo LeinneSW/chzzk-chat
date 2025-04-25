@@ -128,7 +128,7 @@ window.addEventListener('load', async () => {
         return;
     }
     document.onclick = () => {
-        addTTSQueue('TTS가 활성화 되었습니다.');
+        addTTSQueue('TTS 활성화');
         document.onclick = () => {};
     }
 
