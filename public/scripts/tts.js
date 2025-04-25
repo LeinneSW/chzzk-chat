@@ -106,6 +106,8 @@ const playTTS = (text) => {
     }*/
     isPlaying = true;
     const audio = new Audio(ttsUrl.toString());
+    const volume = +localStorage.getItem('ttsVolume') || 100;
+    audio.volume = volume / 100;
     const playNext = () => {
         isPlaying = false;
         processQueue();
