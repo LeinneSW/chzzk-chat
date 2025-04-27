@@ -56,7 +56,12 @@
     font-weight: bold;
 }
 
-#settings-button{
+#button-group{
     margin-left: auto;
+    display: flex;
+    gap: .4em;
+}
+
+.button{
     cursor: pointer;
 }
