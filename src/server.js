@@ -74,6 +74,26 @@ app.get('/colorCodes', async (req, res) => {
     }
 });
 
+app.post('/test', (req, res) => {
+    fetch('https://comm-api.game.naver.com/nng_main/v1/chats/notices', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Cookie": ""
+        },
+        body: JSON.stringify({
+            channelId: "",
+            chatType: "STREAMING",
+            messageTime: 0,
+            messageUserIdHash: "",
+            streamingChannelId: ""
+        })
+    })
+        .then(res => res.json())
+        .then(data => console.log("전송 성공:", data))
+        .catch(err => console.error("전송 실패:", err));
+})
+
 const PORT = process.env.HTTP_PORT || 5000;
 app.listen(PORT, () => {
     console.log(`서버가 ${PORT} 포트에서 실행 중입니다.`);
