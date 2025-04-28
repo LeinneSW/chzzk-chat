@@ -31,35 +31,6 @@ const hideTooltip = (option) => {
 }
 
 window.addEventListener('load', () => {
-    const settings = document.getElementById('settings')
-    const liveInfo = document.getElementById('live-container')
-
-    let count = 0;
-    function checkSettingVisibility(){
-        if(count > 0){
-            settings.classList.add('show')
-        }else{
-            settings.classList.remove('show')
-        }
-    }
-    settings.addEventListener('mouseenter', () => {
-        ++count;
-        checkSettingVisibility();
-    })
-    liveInfo.addEventListener('mouseenter', () => {
-        ++count;
-        checkSettingVisibility();
-    })
-
-    settings.addEventListener('mouseleave', () => {
-        --count;
-        checkSettingVisibility();
-    })
-    liveInfo.addEventListener('mouseleave', () => {
-        --count;
-        checkSettingVisibility();
-    })
-
     const sliders = document.querySelectorAll('.slider-container > .slider')
     for(const slider of sliders){
         const saveName = slider.dataset.saveName
