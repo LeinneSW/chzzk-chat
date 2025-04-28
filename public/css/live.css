@@ -59,7 +59,7 @@
 #button-group{
     margin-left: auto;
     display: flex;
-    gap: .4em;
+    gap: .6em;
 }
 
 .button{
