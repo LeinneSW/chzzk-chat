@@ -100,7 +100,7 @@ body, html{
 }
 
 #notice-container *{
-    font-size: calc(var(--font-size) + 3px);
+    font-size: var(--font-size);
 }
 
 #notice-container *:last-child{
