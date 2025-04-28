@@ -84,6 +84,15 @@ const connectChannel = () => {
                         channelId: chzzkChat?.chatChannelId,
                     })
                 })
+                    .then(async (res) => {
+                        const data = await res.json();
+                        if(res.ok && data.code === 200){
+                            noticeContainer.onclick = () => {};
+                        }else{
+                            showToast('공지 제거 실패! 권한이 없습니다.')
+                        }
+                    })
+                    .catch(() => showToast('공지 제거 실패! 권한이 없습니다.'))
             }
         }
     })
@@ -193,7 +202,14 @@ window.addEventListener('load', async () => {
                         messageUserIdHash: messageBox.dataset.userIdHash,
                         streamingChannelId: liveStatus?.channelId
                     })
-                });
+                })
+                    .then(async (res) => {
+                        const data = await res.json();
+                        if(!res.ok || data.code !== 200){
+                            showToast('공지 등록 실패! 권한이 없습니다.')
+                        }
+                    })
+                    .catch(() => showToast('공지 등록 실패! 권한이 없습니다.'))
             };
         }else{
             chatContainer.onclick = () => {};
