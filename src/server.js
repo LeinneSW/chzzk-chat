@@ -56,7 +56,10 @@ app.get('/cors/:base/*', async (req, res) => {
 });
 app.get('/colorCodes', async (req, res) => {
     try{
-        const httpData = await fetch('https://api.chzzk.naver.com/service/v2/nickname/color/codes', {headers: agentHeaders});
+        const httpData = await fetch(
+            'https://api.chzzk.naver.com/service/v2/nickname/color/codes',
+            {headers: agentHeaders}
+        );
         const resData = await httpData.json();
         res.type("application/json");
         res.send(resData.content?.codeList || []);
