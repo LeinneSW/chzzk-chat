@@ -14,10 +14,11 @@ const formatTime = (msecs) => {
     return `[${h}:${m}]`
 }
 
-const addMessageBox = (nickname, message, msecs = Date.now(), colorData = 'white', emojiList = {}, badgeList = []) => {
+const addMessageBox = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}, badgeList = []) => {
     const chatBox = document.getElementById('chat-container');
     const messageBoxDiv = document.createElement('div')
     messageBoxDiv.id = msecs + ''
+    messageBoxDiv.dataset.userIdHash = profile.userIdHash
     messageBoxDiv.className = 'message-box'
     chatBox.appendChild(messageBoxDiv)
 
@@ -36,7 +37,7 @@ const addMessageBox = (nickname, message, msecs = Date.now(), colorData = 'white
 
     const userSpan = document.createElement('span')
     userSpan.className = 'nickname'
-    userSpan.textContent = nickname
+    userSpan.textContent = profile.nickname
     if(typeof colorData === 'string'){
         userSpan.style.color = colorData
     }else{

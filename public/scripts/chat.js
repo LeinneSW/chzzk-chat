@@ -67,13 +67,32 @@ const connectChannel = () => {
         startTime = Date.now();
         chzzkChat.requestRecentChat(50)
     })
+    chzzkChat.on('notice', notice => {
+        const noticeContainer = document.getElementById('notice-container');
+        if(!notice || typeof notice !== 'object'){
+            noticeContainer.classList.add('hide');
+        }else{
+            noticeContainer.classList.remove('hide');
+            noticeContainer.innerHTML = `<div>${notice.extras.registerProfile.nickname}님이 고정</div><div>${notice.message}</div>`;
+            noticeContainer.onclick = () => {
+                fetch('/notice', {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        channelId: chzzkChat?.chatChannelId,
+                    })
+                })
+            }
+        }
+    })
     chzzkChat.on('chat', chat => {
-        const nickname = chat.profile.nickname;
         const message = chat.message;
         const date = +chat.time || Date.now();
 
         if(startTime <= date){
-            addTTSQueue(message, nickname);
+            addTTSQueue(message, chat.profile.nickname);
         }
 
         let colorData;
@@ -106,7 +125,7 @@ const connectChannel = () => {
         for(const viewerBadge of chat.profile.viewerBadges){
             badgeList.push(viewerBadge.badge.imageUrl)
         }
-        addMessageBox(nickname, message, date, colorData, emojiList, badgeList);
+        addMessageBox(chat.profile, message, date, colorData, emojiList, badgeList);
     });
     chzzkChat.connect().catch(() => {});
 }
@@ -148,6 +167,37 @@ window.addEventListener('load', async () => {
             redirectChannel(channel.channelId);
         }
         return;
+    }
+
+    // 공지 기능
+    const chatContainer = document.getElementById('chat-container');
+    const noticeButton = document.getElementById('notice-button');
+    noticeButton.onclick = () => {
+        chatContainer.classList.toggle('select-notice');
+        if(chatContainer.classList.contains('select-notice')){
+            showToast('고정을 원하는 메시지를 선택해주세요');
+            chatContainer.onclick = (e) => {
+                const messageBox = e.target.closest('.message-box'); // 가장 가까운 .message-box 탐색
+                if(!messageBox) return;
+
+                chatContainer.onclick = () => {};
+                chatContainer.classList.remove('select-notice');
+                fetch('/notice', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        channelId: chzzkChat?.chatChannelId,
+                        messageTime: +messageBox.id,
+                        messageUserIdHash: messageBox.dataset.userIdHash,
+                        streamingChannelId: liveStatus?.channelId
+                    })
+                });
+            };
+        }else{
+            chatContainer.onclick = () => {};
+        }
     }
 
     // 채널명, 프사 취득하기

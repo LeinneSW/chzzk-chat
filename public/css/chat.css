@@ -52,6 +52,13 @@ body, html{
     line-height: calc(var(--font-size) + 10px); /* 이모지 크기를 맞추기 위해 사용 */
 }
 
+.select-notice > .message-box:hover{
+    background-color: #414141;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: .35s;
+}
+
 .message-box:first-child{
     margin-top: 4px;
 }
@@ -77,6 +84,31 @@ body, html{
 
 .message{
     color: white;
+}
+
+#notice-container{
+    position: absolute;
+    top: 70px;
+    left: 10px;
+    right: 10px;
+    padding: 10px;
+
+    color: black;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+#notice-container *{
+    font-size: calc(var(--font-size) + 3px);
+}
+
+#notice-container *:last-child{
+    font-weight: bold;
+}
+
+.hide{
+    display: none !important;
 }
 
 /* 스크롤바 트랙 (배경) */
