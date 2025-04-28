@@ -1,6 +1,7 @@
 import express from 'express';
 import {googleTTS} from "./google.js";
 
+const authCookie = '';
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
@@ -8,16 +9,10 @@ const corsHeaders = {
 const agentHeaders = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 };
-
 const baseURLs = {
     chzzk: "https://api.chzzk.naver.com",
     game: "https://comm-api.game.naver.com/nng_main"
 };
-/*const whitelistPatterns = [
-    /^\/cors\/chzzk\/service\/v2\/channels\/[^\/]+\/live-detail$/,
-    /^\/cors\/chzzk\/polling\/v2\/channels\/[^\/]+\/live-status$/,
-    /^\/cors\/game\/v1\/chats\/access-token$/
-];*/
 
 const app = express();
 app.use(express.json());
@@ -35,11 +30,6 @@ app.post('/text-to-speech', (req, res) => {
 });
 
 app.get('/cors/:base/*', async (req, res) => {
-    // 요청 경로가 화이트리스트 패턴과 일치하는지 확인
-    /*if(!whitelistPatterns.some(pattern => pattern.test(req.path))){
-        return res.status(403).set(corsHeaders).send("This URL is not allowed.");
-    }*/
-
     const {base} = req.params;
     const baseURL = baseURLs[base];
     if(!baseURL){
@@ -75,24 +65,54 @@ app.get('/colorCodes', async (req, res) => {
     }
 });
 
-app.post('/test', (req, res) => {
-    fetch('https://comm-api.game.naver.com/nng_main/v1/chats/notices', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Cookie": ""
-        },
-        body: JSON.stringify({
-            channelId: "",
-            chatType: "STREAMING",
-            messageTime: 0,
-            messageUserIdHash: "",
-            streamingChannelId: ""
-        })
-    })
-        .then(res => res.json())
-        .then(data => console.log("전송 성공:", data))
-        .catch(err => console.error("전송 실패:", err));
+app.post('/notice', async (req, res) => {
+    try{
+        const {channelId, messageTime, messageUserIdHash, streamingChannelId} = req.body;
+        const reqNotice = await fetch('https://comm-api.game.naver.com/nng_main/v1/chats/notices', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Cookie": authCookie
+            },
+            body: JSON.stringify({
+                channelId,
+                chatType: "STREAMING",
+                messageTime,
+                messageUserIdHash,
+                streamingChannelId
+            })
+        });
+        if(reqNotice.ok){
+            const jsonData = await reqNotice.json();
+            return res.status(jsonData.code || 500).json(jsonData);
+        }
+    }catch(e){
+        console.error(e);
+    }
+    res.sendStatus(500);
+})
+app.delete('/notice', async (req, res) => {
+    try{
+        const {channelId} = req.body;
+        const reqNotice = await fetch('https://comm-api.game.naver.com/nng_main/v1/chats/notices', {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Cookie": authCookie
+            },
+            body: JSON.stringify({
+                channelId,
+                chatType: "STREAMING",
+            })
+        });
+        if(reqNotice.ok){
+            const jsonData = await reqNotice.json();
+            return res.status(jsonData.code || 500).json(jsonData);
+        }
+    }catch(e){
+        console.error(e);
+    }
+    res.sendStatus(500);
 })
 
 const PORT = process.env.HTTP_PORT || 5000;
