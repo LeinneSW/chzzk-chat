@@ -118,16 +118,4 @@ window.addEventListener('load', async () => {
                 break;
         }
     }
-
-    // Modal UI
-    const modal = document.getElementById('settings-modal');
-    const settingsButton = document.getElementById('settings-button');
-    settingsButton.onclick = () => {
-        modal.classList.add('show');
-    };
-    modal.onclick = (e) => {
-        if(e.target === modal){
-            modal.classList.remove('show');
-        }
-    }
 })
