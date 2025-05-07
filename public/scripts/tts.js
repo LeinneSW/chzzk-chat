@@ -172,3 +172,14 @@ const playTTSByGoogle = async (text) => {
         processQueue();
     }
 };
+
+window.addEventListener('load', () => {
+    document.onclick = () => {
+        if(localStorage.getItem('enableTTS') === '0'){
+            return;
+        }
+
+        playTTS('TTS 활성화');
+        document.onclick = () => {};
+    }
+})

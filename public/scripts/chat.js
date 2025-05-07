@@ -135,10 +135,6 @@ window.addEventListener('load', async () => {
         redirectChannel(channelId);
         return;
     }
-    document.onclick = () => {
-        addTTSQueue('TTS 활성화');
-        document.onclick = () => {};
-    }
 
     let liveDetail;
     try{
