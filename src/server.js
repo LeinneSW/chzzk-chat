@@ -1,7 +1,6 @@
 import express from 'express';
 import {googleTTS} from "./google.js";
 
-const authCookie = '';
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
