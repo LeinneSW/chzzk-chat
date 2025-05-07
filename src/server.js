@@ -68,56 +68,6 @@ app.get('/colorCodes', async (req, res) => {
     }
 });
 
-app.post('/notice', async (req, res) => {
-    try{
-        const {channelId, messageTime, messageUserIdHash, streamingChannelId} = req.body;
-        const reqNotice = await fetch('https://comm-api.game.naver.com/nng_main/v1/chats/notices', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Cookie": authCookie
-            },
-            body: JSON.stringify({
-                channelId,
-                chatType: "STREAMING",
-                messageTime,
-                messageUserIdHash,
-                streamingChannelId
-            })
-        });
-        if(reqNotice.ok){
-            const jsonData = await reqNotice.json();
-            return res.status(jsonData.code || 500).json(jsonData);
-        }
-    }catch(e){
-        console.error(e);
-    }
-    res.sendStatus(500);
-})
-app.delete('/notice', async (req, res) => {
-    try{
-        const {channelId} = req.body;
-        const reqNotice = await fetch('https://comm-api.game.naver.com/nng_main/v1/chats/notices', {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Cookie": authCookie
-            },
-            body: JSON.stringify({
-                channelId,
-                chatType: "STREAMING",
-            })
-        });
-        if(reqNotice.ok){
-            const jsonData = await reqNotice.json();
-            return res.status(jsonData.code || 500).json(jsonData);
-        }
-    }catch(e){
-        console.error(e);
-    }
-    res.sendStatus(500);
-})
-
 const PORT = process.env.HTTP_PORT || 5000;
 app.listen(PORT, () => {
     console.log(`서버가 ${PORT} 포트에서 실행 중입니다.`);

@@ -74,26 +74,6 @@ const connectChannel = () => {
         }else{
             noticeContainer.classList.remove('hide');
             noticeContainer.innerHTML = `<div>${notice.extras.registerProfile.nickname}님이 고정</div><div>${notice.message}</div>`;
-            noticeContainer.onclick = () => {
-                fetch('/notice', {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        channelId: chzzkChat?.chatChannelId,
-                    })
-                })
-                    .then(async (res) => {
-                        const data = await res.json();
-                        if(res.ok && data.code === 200){
-                            noticeContainer.onclick = () => {};
-                        }else{
-                            showToast('공지 제거 실패! 권한이 없습니다.')
-                        }
-                    })
-                    .catch(() => showToast('공지 제거 실패! 권한이 없습니다.'))
-            }
         }
     })
     chzzkChat.on('chat', chat => {
@@ -176,44 +156,6 @@ window.addEventListener('load', async () => {
             redirectChannel(channel.channelId);
         }
         return;
-    }
-
-    // 공지 기능
-    const chatContainer = document.getElementById('chat-container');
-    const noticeButton = document.getElementById('notice-button');
-    noticeButton.onclick = () => {
-        chatContainer.classList.toggle('select-notice');
-        if(chatContainer.classList.contains('select-notice')){
-            showToast('고정을 원하는 메시지를 선택해주세요');
-            chatContainer.onclick = (e) => {
-                const messageBox = e.target.closest('.message-box'); // 가장 가까운 .message-box 탐색
-                if(!messageBox) return;
-
-                chatContainer.onclick = () => {};
-                chatContainer.classList.remove('select-notice');
-                fetch('/notice', {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        channelId: chzzkChat?.chatChannelId,
-                        messageTime: +messageBox.id,
-                        messageUserIdHash: messageBox.dataset.userIdHash,
-                        streamingChannelId: liveStatus?.channelId
-                    })
-                })
-                    .then(async (res) => {
-                        const data = await res.json();
-                        if(!res.ok || data.code !== 200){
-                            showToast('공지 등록 실패! 권한이 없습니다.')
-                        }
-                    })
-                    .catch(() => showToast('공지 등록 실패! 권한이 없습니다.'))
-            };
-        }else{
-            chatContainer.onclick = () => {};
-        }
     }
 
     // 채널명, 프사 취득하기
